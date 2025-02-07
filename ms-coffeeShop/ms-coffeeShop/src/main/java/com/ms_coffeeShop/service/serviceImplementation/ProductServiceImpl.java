@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(String productName) {
         Product product = new Product();
-        //check if product name is empty or already exists
+
         if (productName.isEmpty()) {
             throw new IllegalArgumentException("Product name cannot be empty");
         }
