@@ -1,4 +1,4 @@
-package entity;
+package com.ms_coffeeShop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
