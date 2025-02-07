@@ -12,6 +12,7 @@ public class Product {
     private Long id;
     private String name;
     private Integer currentStock;
+    private double lastBoughtPrice;
     private double lastSoldPrice;
 
     @PrePersist

@@ -57,4 +57,19 @@ public class ProductServiceImpl implements ProductService {
             throw new NoSuchElementException("Product not found with id: " + id);
         }
     }
+
+    @Override
+    public void updateProductPurchases(Product product, int quantity, double price) {
+        product.setLastBoughtPrice(price);
+        product.setCurrentStock(product.getCurrentStock() + quantity);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void updateProductSellings(Product product, int quantity, double price) {
+        product.setLastSoldPrice(price);
+        product.setCurrentStock(product.getCurrentStock() - quantity);
+        productRepository.save(product);
+
+    }
 }
