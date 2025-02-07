@@ -1,9 +1,14 @@
 package com.ms_coffeeShop.service;
 
+import com.ms_coffeeShop.DTOs.MonthlyStatisticsDto;
 import com.ms_coffeeShop.DTOs.TransactionDto;
+import com.ms_coffeeShop.DTOs.YearlyStatisticsDTO;
 import com.ms_coffeeShop.entity.Purchases;
 import com.ms_coffeeShop.entity.Sellings;
 import org.springframework.data.domain.Page;
+
+import java.time.YearMonth;
+import java.util.List;
 
 public interface TransactionService {
     Purchases createPurchase(TransactionDto transactionDto);
@@ -13,4 +18,6 @@ public interface TransactionService {
     Page<Purchases> getAllPurchases(int page, int size);
 
     Page<Sellings> getAllSellings(int page, int size);
+    List<MonthlyStatisticsDto> getMonthlyStatistics(YearMonth month);
+    List<YearlyStatisticsDTO> getYearlyStatistics(int year);
 }

@@ -1,6 +1,8 @@
 package com.ms_coffeeShop.controller;
 
+import com.ms_coffeeShop.DTOs.MonthlyStatisticsDto;
 import com.ms_coffeeShop.DTOs.TransactionDto;
+import com.ms_coffeeShop.DTOs.YearlyStatisticsDTO;
 import com.ms_coffeeShop.entity.Purchases;
 import com.ms_coffeeShop.entity.Sellings;
 import com.ms_coffeeShop.repository.PurchasesRepository;
@@ -10,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.YearMonth;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +47,15 @@ public ResponseEntity<Page<Purchases>> getAllPurchases(@RequestParam(defaultValu
         Page<Sellings> sellings = transactionService.getAllSellings(page, size);
         return ResponseEntity.ok(sellings);
     }
-
+@GetMapping("/monthlyStatistics")
+    public ResponseEntity<List<MonthlyStatisticsDto>> getMonthlyStatistics(@RequestParam String month){
+        YearMonth yearMonth = YearMonth.parse(month);
+        List<MonthlyStatisticsDto> monthlyStatistics = transactionService.getMonthlyStatistics(yearMonth);
+        return ResponseEntity.ok(monthlyStatistics);
+}
+    @GetMapping("/yearlyStatistics")
+    public ResponseEntity<List<YearlyStatisticsDTO>> getYearlyStatistics(@RequestParam int year) {
+        List<YearlyStatisticsDTO> yearlyStatistics = transactionService.getYearlyStatistics(year);
+        return ResponseEntity.ok(yearlyStatistics);
+    }
 }
