@@ -37,15 +37,17 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
-                                "v3/api-docs/**",
-                                "swagger-resources",
-                                "swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
                                 "/configuration/ui",
                                 "/configuration/security",
                                 "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/webjars/**"
                         ).permitAll()
+                        .requestMatchers("/error").permitAll()  // Allow error pages
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

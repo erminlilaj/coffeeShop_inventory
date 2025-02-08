@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com</groupId>
@@ -96,6 +96,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId>-->
+<!--			<artifactId>springdoc-openapi-ui</artifactId>-->
+<!--			<version>1.7.0</version>-->
+<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -125,6 +137,53 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- version can be inherited from your parent -->
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- URL where your application serves the OpenAPI docs -->
+					<apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
+					<!-- Name of the generated file -->
+					<outputFileName>openapi.json</outputFileName>
+					<!-- Directory where the file will be placed -->
+					<outputDir>${project.build.directory}/openapi-spec</outputDir>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
