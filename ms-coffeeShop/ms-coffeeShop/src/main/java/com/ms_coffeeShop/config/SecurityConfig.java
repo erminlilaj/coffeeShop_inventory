@@ -30,8 +30,14 @@ public class SecurityConfig {
             AuthenticationProvider authenticationProvider
     ) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                        // Disable CSRF for the H2 console
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable()
+                )
                 .cors(Customizer.withDefaults())
+                // Use the lambda DSL to disable X-Frame-Options
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 "/api/auth/**",
@@ -45,7 +51,8 @@ public class SecurityConfig {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/h2-console/**"
                         ).permitAll()
                         .requestMatchers("/error").permitAll()  // Allow error pages
                         .anyRequest().authenticated()
@@ -88,7 +95,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200", "http://localhost:3000")
+                        .allowedOrigins("http://localhost:4200", "http://localhost:4321")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

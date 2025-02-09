@@ -15,11 +15,11 @@ public class Product {
     private double lastBoughtPrice;
     private double lastSoldPrice;
 
-    @PrePersist
-    private void onCreate(){
-        currentStock=0;
-        lastSoldPrice=0.0;
-    }
+//    @PrePersist
+//    private void onCreate(){
+//        currentStock=0;
+//        lastSoldPrice=0.0;
+//    }
 
 
 }
