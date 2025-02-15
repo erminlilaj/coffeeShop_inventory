@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 @CrossOrigin
 public class TransactionController {
-
     private final TransactionService transactionService;
 
     @PostMapping("/purchase")
@@ -29,6 +28,7 @@ public class TransactionController {
         Purchases createdPurchase = transactionService.createPurchase(transactionDto);
         return ResponseEntity.ok(createdPurchase);
     }
+
     @PostMapping("/sell")
     public ResponseEntity<Sellings> createSell(@RequestBody TransactionDto transactionDto) {
         Sellings createdSell = transactionService.createSell(transactionDto);
@@ -36,27 +36,31 @@ public class TransactionController {
     }
 
     @GetMapping("/purchases")
-public ResponseEntity<Page<Purchases>> getAllPurchases(@RequestParam(defaultValue = "0") int page,
-                                                       @RequestParam(defaultValue = "10") int size) {
-    Page<Purchases> purchases = transactionService.getAllPurchases(page, size);
-    return ResponseEntity.ok(purchases);
-}
+    public ResponseEntity<Page<Purchases>> getAllPurchases(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Purchases> purchases = transactionService.getAllPurchases(page, size);
+        return ResponseEntity.ok(purchases);
+    }
 
     @GetMapping("/sellings")
-    public ResponseEntity<Page<Sellings>> getAllSellings(@RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<Sellings>> getAllSellings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Page<Sellings> sellings = transactionService.getAllSellings(page, size);
         return ResponseEntity.ok(sellings);
     }
-@GetMapping("/monthlyStatistics")
-    public ResponseEntity<List<MonthlyStatisticsDto>> getMonthlyStatistics(@RequestParam String month){
+
+    @GetMapping("/monthlyStatistics")
+    public ResponseEntity<List<MonthlyStatisticsDto>> getMonthlyStatistics(@RequestParam String month, @RequestParam(required = false) String type) {
         YearMonth yearMonth = YearMonth.parse(month);
-        List<MonthlyStatisticsDto> monthlyStatistics = transactionService.getMonthlyStatistics(yearMonth);
+        List<MonthlyStatisticsDto> monthlyStatistics = transactionService.getMonthlyStatistics(yearMonth, type);
         return ResponseEntity.ok(monthlyStatistics);
-}
+    }
+
     @GetMapping("/yearlyStatistics")
-    public ResponseEntity<List<YearlyStatisticsDTO>> getYearlyStatistics(@RequestParam int year) {
-        List<YearlyStatisticsDTO> yearlyStatistics = transactionService.getYearlyStatistics(year);
+    public ResponseEntity<List<YearlyStatisticsDTO>> getYearlyStatistics(@RequestParam int year, @RequestParam(required = false) String type) {
+        List<YearlyStatisticsDTO> yearlyStatistics = transactionService.getYearlyStatistics(year, type);
         return ResponseEntity.ok(yearlyStatistics);
     }
 }

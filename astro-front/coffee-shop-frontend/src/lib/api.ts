@@ -1,7 +1,6 @@
-// src/lib/api.ts
 import axios from 'axios';
 import { authService } from './auth';
-import type { Product, PurchaseRecord, SaleRecord, PageResponse } from './types';
+import type { Product, PurchaseRecord, SaleRecord, PageResponse, Transaction, MonthlyStatisticsDto, YearlyStatisticsDTO } from './types';
 
 const API_URL = 'http://localhost:8080/api';
 
@@ -35,22 +34,12 @@ export const createProduct = async (productData: Partial<Product>): Promise<Prod
 };
 
 // Transactions API
-export const createPurchase = async (purchaseData: {
-    productId: number;
-    quantity: number;
-    price: number;
-    transactionDate: string;
-}): Promise<PurchaseRecord> => {
+export const createPurchase = async (purchaseData: Transaction): Promise<PurchaseRecord> => {
     const response = await axios.post(`${API_URL}/transactions/purchase`, purchaseData);
     return response.data;
 };
 
-export const createSale = async (saleData: {
-    productId: number;
-    quantity: number;
-    price: number;
-    transactionDate: string;
-}): Promise<SaleRecord> => {
+export const createSale = async (saleData: Transaction): Promise<SaleRecord> => {
     const response = await axios.post(`${API_URL}/transactions/sell`, saleData);
     return response.data;
 };
@@ -65,7 +54,7 @@ export const getPurchases = async (
         size: size.toString(),
         ...(month ? { month } : {})
     });
-    
+
     const response = await axios.get(`${API_URL}/transactions/purchases?${params}`);
     return response.data;
 };
@@ -80,7 +69,27 @@ export const getSales = async (
         size: size.toString(),
         ...(month ? { month } : {})
     });
-    
+
     const response = await axios.get(`${API_URL}/transactions/sellings?${params}`);
+    return response.data;
+};
+
+export const getMonthlyStatistics = async (month: string, type?: string): Promise<MonthlyStatisticsDto[]> => {
+    const params = new URLSearchParams({
+        month,
+        ...(type ? { type } : {})
+    });
+
+    const response = await axios.get(`${API_URL}/transactions/monthlyStatistics?${params}`);
+    return response.data;
+};
+
+export const getYearlyStatistics = async (year: number, type?: string): Promise<YearlyStatisticsDTO[]> => {
+    const params = new URLSearchParams({
+        year: year.toString(),
+        ...(type ? { type } : {})
+    });
+
+    const response = await axios.get(`${API_URL}/transactions/yearlyStatistics?${params}`);
     return response.data;
 };

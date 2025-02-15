@@ -25,41 +25,38 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
-
     private final PurchasesRepository purchasesRepository;
     private final SellingsRepository sellingsRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
+
     @Override
     public Purchases createPurchase(TransactionDto transactionDto) {
         Long productId = transactionDto.getProductId();
         Product product = productService.getProductById(productId);
-        productService.updateProductPurchases(product,transactionDto.getQuantity(),transactionDto.getPrice());
+        productService.updateProductPurchases(product, transactionDto.getQuantity(), transactionDto.getPrice());
         Purchases purchases = new Purchases();
         purchases.setProduct(product);
         purchases.setQuantity(transactionDto.getQuantity());
         purchases.setPrice(transactionDto.getPrice());
-        purchases.setTotalPrice(transactionDto.getPrice()*transactionDto.getQuantity());
+        purchases.setTotalPrice(transactionDto.getPrice() * transactionDto.getQuantity());
         purchases.setBuyingDate(transactionDto.getTransactionDate());
         return purchasesRepository.save(purchases);
-
-
     }
 
     @Override
     public Sellings createSell(TransactionDto transactionDto) {
         Long productId = transactionDto.getProductId();
         Product product = productService.getProductById(productId);
-
-        if(product.getCurrentStock()<transactionDto.getQuantity()){
-            throw new IllegalArgumentException("Not enough products in stock to sell");
+        if (product.getCurrentStock() < transactionDto.getQuantity()) {
+            throw new IllegalArgumentException("Insufficient stock");
         }
-        productService.updateProductSellings(product,transactionDto.getQuantity(),transactionDto.getPrice());
+        productService.updateProductSellings(product, transactionDto.getQuantity(), transactionDto.getPrice());
         Sellings sellings = new Sellings();
         sellings.setProduct(product);
         sellings.setQuantity(transactionDto.getQuantity());
         sellings.setPrice(transactionDto.getPrice());
-        sellings.setTotalPrice(transactionDto.getPrice()*transactionDto.getQuantity());
+        sellings.setTotalPrice(transactionDto.getPrice() * transactionDto.getQuantity());
         sellings.setSellingDate(transactionDto.getTransactionDate());
         return sellingsRepository.save(sellings);
     }
@@ -68,7 +65,6 @@ public class TransactionServiceImpl implements TransactionService {
     public Page<Purchases> getAllPurchases(int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         return purchasesRepository.findAll(pageable);
-
     }
 
     @Override
@@ -78,49 +74,92 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<MonthlyStatisticsDto> getMonthlyStatistics(YearMonth month) {
-        List<Product> products = productRepository.findAll();
+    public List<MonthlyStatisticsDto> getMonthlyStatistics(YearMonth month, String type) {
+        int year = month.getYear();
+        int monthValue = month.getMonthValue();
 
-        return products.stream().map(product -> {
-            // Using primitive types to avoid null pointer issues
-            int totalBought = purchasesRepository.sumQuantityByProductAndMonth(product.getId(), month);
-            double totalSpent = purchasesRepository.sumTotalPriceByProductAndMonth(product.getId(), month);
-            int totalSold = sellingsRepository.sumQuantityByProductAndMonth(product.getId(), month);
-            double totalRevenue = sellingsRepository.sumTotalPriceByProductAndMonth(product.getId(), month);
-            double totalProfit = totalRevenue - totalSpent;
-            int stockAtEndOfMonth = product.getCurrentStock();
+        List<Long> purchaseProductIds = purchasesRepository.findProductIdsWithPurchasesInMonth(year, monthValue);
+        List<Long> sellingProductIds = sellingsRepository.findProductIdsWithSellingsInMonth(year, monthValue);
+
+        Set<Long> activeProductIds = new HashSet<>();
+        if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("purchases")) {
+            activeProductIds.addAll(purchaseProductIds);
+        }
+        if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("sellings")) {
+            activeProductIds.addAll(sellingProductIds);
+        }
+
+        if (activeProductIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<Product> activeProducts = productRepository.findAllById(activeProductIds);
+        return activeProducts.stream().map(product -> {
+            int totalBought = 0;
+            double totalSpent = 0.0;
+            int totalSold = 0;
+            double totalRevenue = 0.0;
+            double totalProfit = 0.0;
+
+            if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("purchases")) {
+                totalBought = purchasesRepository.sumQuantityByProductAndMonth(product.getId(), month);
+                totalSpent = purchasesRepository.sumTotalPriceByProductAndMonth(product.getId(), month);
+            }
+
+            if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("sellings")) {
+                totalSold = sellingsRepository.sumQuantityByProductAndMonth(product.getId(), month);
+                totalRevenue = sellingsRepository.sumTotalPriceByProductAndMonth(product.getId(), month);
+            }
+
+            totalProfit = totalRevenue - totalSpent;
 
             return new MonthlyStatisticsDto(
                     product.getName(),
                     totalBought,
                     totalSpent,
                     totalSold,
-                    totalProfit,
-                    stockAtEndOfMonth
+                    totalRevenue,
+                    totalProfit
             );
         }).collect(Collectors.toList());
     }
 
     @Override
-    public List<YearlyStatisticsDTO> getYearlyStatistics(int year) {
-
+    public List<YearlyStatisticsDTO> getYearlyStatistics(int year, String type) {
         List<Long> purchaseProductIds = purchasesRepository.findProductIdsWithPurchasesInYear(year);
         List<Long> sellingProductIds = sellingsRepository.findProductIdsWithSellingsInYear(year);
 
-
         Set<Long> activeProductIds = new HashSet<>();
-        activeProductIds.addAll(purchaseProductIds);
-        activeProductIds.addAll(sellingProductIds);
+        if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("purchases")) {
+            activeProductIds.addAll(purchaseProductIds);
+        }
+        if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("sellings")) {
+            activeProductIds.addAll(sellingProductIds);
+        }
 
+        if (activeProductIds.isEmpty()) {
+            return List.of();
+        }
 
         List<Product> activeProducts = productRepository.findAllById(activeProductIds);
-
         return activeProducts.stream().map(product -> {
-            int totalPurchased = purchasesRepository.sumQuantityByProductAndYear(product.getId(), year);
-            double totalPurchaseCost = purchasesRepository.sumTotalPriceByProductAndYear(product.getId(), year);
-            int totalSold = sellingsRepository.sumQuantityByProductAndYear(product.getId(), year);
-            double totalSalesRevenue = sellingsRepository.sumTotalPriceByProductAndYear(product.getId(), year);
-            double yearlyProfit = totalSalesRevenue - totalPurchaseCost;
+            int totalPurchased = 0;
+            double totalPurchaseCost = 0.0;
+            int totalSold = 0;
+            double totalSalesRevenue = 0.0;
+            double yearlyProfit = 0.0;
+
+            if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("purchases")) {
+                totalPurchased = purchasesRepository.sumQuantityByProductAndYear(product.getId(), year);
+                totalPurchaseCost = purchasesRepository.sumTotalPriceByProductAndYear(product.getId(), year);
+            }
+
+            if (type == null || type.equalsIgnoreCase("both") || type.equalsIgnoreCase("sellings")) {
+                totalSold = sellingsRepository.sumQuantityByProductAndYear(product.getId(), year);
+                totalSalesRevenue = sellingsRepository.sumTotalPriceByProductAndYear(product.getId(), year);
+            }
+
+            yearlyProfit = totalSalesRevenue - totalPurchaseCost;
 
             return new YearlyStatisticsDTO(
                     product.getName(),
@@ -128,10 +167,8 @@ public class TransactionServiceImpl implements TransactionService {
                     totalPurchaseCost,
                     totalSold,
                     totalSalesRevenue,
-                    yearlyProfit,
-                    product.getCurrentStock()
+                    yearlyProfit
             );
         }).collect(Collectors.toList());
     }
-
 }

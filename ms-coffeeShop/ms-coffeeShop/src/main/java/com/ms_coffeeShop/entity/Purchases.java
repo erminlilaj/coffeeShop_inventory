@@ -1,17 +1,15 @@
 package com.ms_coffeeShop.entity;
 
 import jakarta.persistence.*;
-
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name="purchases")
+@Table(name = "purchases")
 public class Purchases {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -22,5 +20,4 @@ public class Purchases {
     private Double price;
     private Double totalPrice;
     private LocalDate buyingDate;
-
 }

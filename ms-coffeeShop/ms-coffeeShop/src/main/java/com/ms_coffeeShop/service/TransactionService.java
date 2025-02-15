@@ -18,6 +18,6 @@ public interface TransactionService {
     Page<Purchases> getAllPurchases(int page, int size);
 
     Page<Sellings> getAllSellings(int page, int size);
-    List<MonthlyStatisticsDto> getMonthlyStatistics(YearMonth month);
-    List<YearlyStatisticsDTO> getYearlyStatistics(int year);
+    List<MonthlyStatisticsDto> getMonthlyStatistics(YearMonth month,String type);
+    List<YearlyStatisticsDTO> getYearlyStatistics(int year, String type);
 }

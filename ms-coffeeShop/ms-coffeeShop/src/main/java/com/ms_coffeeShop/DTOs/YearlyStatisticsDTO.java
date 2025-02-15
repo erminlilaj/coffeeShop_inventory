@@ -13,5 +13,5 @@ import lombok.Data;
         private int yearlySales;
         private double totalSalesRevenue;
         private double yearlyProfit;
-        private int currentStock;
+
     }

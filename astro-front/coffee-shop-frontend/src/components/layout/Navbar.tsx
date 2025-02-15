@@ -24,11 +24,9 @@ const Navbar = () => {
                                 Products
                             </a>
                             <a href="/purchases" className="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">
-                                Purchases
+                                Shitje/Blerjet
                             </a>
-                            <a href="/sells" className="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">
-                                Sales
-                            </a>
+                           
                         </div>
                     </div>
 

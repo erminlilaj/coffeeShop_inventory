@@ -1,4 +1,3 @@
-
 export interface Product {
     id: number;
     name: string;
@@ -40,4 +39,22 @@ export interface SaleRecord {
     price: number;
     totalPrice: number;
     sellingDate: string;
+}
+
+export interface MonthlyStatisticsDto {
+    productName: string;
+    totalBought: number;
+    totalSpent: number;
+    totalSold: number;
+    totalRevenue: number;
+    totalProfit: number;
+}
+
+export interface YearlyStatisticsDTO {
+    productName: string;
+    totalPurchased: number;
+    totalPurchaseCost: number;
+    totalSold: number;
+    totalSalesRevenue: number;
+    yearlyProfit: number;
 }

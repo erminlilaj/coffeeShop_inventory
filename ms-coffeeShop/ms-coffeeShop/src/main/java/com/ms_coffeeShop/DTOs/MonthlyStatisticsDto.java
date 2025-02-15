@@ -12,6 +12,7 @@ public class MonthlyStatisticsDto {
     private int totalBought;
     private double totalSpent;
     private int totalSold;
+    private double totalRevenue;
     private double totalProfit;
-    private int stockAtEndOfMonth;
+
 }
