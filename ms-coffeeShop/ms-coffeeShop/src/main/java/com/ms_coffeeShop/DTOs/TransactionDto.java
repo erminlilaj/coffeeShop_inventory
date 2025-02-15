@@ -14,6 +14,6 @@ public class TransactionDto {
 
     private int quantity;
     private double price;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate transactionDate;
 }

@@ -1,5 +1,6 @@
 package com.ms_coffeeShop.service.serviceImplementation;
 
+import com.ms_coffeeShop.DTOs.ProductDto;
 import com.ms_coffeeShop.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(String productName) {
+    public Product createProduct(ProductDto productDto) {
         Product product = new Product();
 
-        if (productName.isEmpty()) {
+        if (productDto.getName().isEmpty()) {
             throw new IllegalArgumentException("Product name cannot be empty");
         }
-        if (productRepository.existsByName(productName)) {
-            throw new IllegalArgumentException("Product with name " + productName + " already exists");
+        if (productRepository.existsByName(productDto.getName())) {
+            throw new IllegalArgumentException("Product with name " + productDto.getName() + " already exists");
         }
-        product.setName(productName);
+        product.setName(productDto.getName());
+        product.setCurrentStock(productDto.getCurrentStock());
+        product.setLastSoldPrice(productDto.getLastSoldPrice());
+        product.setLastBoughtPrice(productDto.getLastBoughtPrice());
         return productRepository.save(product);
     }
 

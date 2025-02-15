@@ -1,5 +1,6 @@
 package com.ms_coffeeShop.controller;
 
+import com.ms_coffeeShop.DTOs.ProductDto;
 import com.ms_coffeeShop.entity.Product;
 import lombok.RequiredArgsConstructor;
 
@@ -22,9 +23,9 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody String productName) {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) {
 
-        Product createdProduct = productService.createProduct(productName);
+        Product createdProduct = productService.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
 
     }
