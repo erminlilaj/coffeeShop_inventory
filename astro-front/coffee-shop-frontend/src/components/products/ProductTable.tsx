@@ -105,14 +105,16 @@ const ProductTable: React.FC<Props> = () => {
                                         className="text-indigo-600 hover:text-indigo-900 mx-2"
                                         title="Bli"
                                     >
-                                        <ShoppingCart className="h-5 w-5" />
+                                      
+                                        <span className="ml-1">Bli</span>
                                     </button>
                                     <button
                                         onClick={() => handleSell(product)}
                                         className="text-green-600 hover:text-green-900 mx-2"
                                         title="Shit"
                                     >
-                                        <DollarSign className="h-5 w-5" />
+                                     
+                                        <span className="ml-1">Shit</span>
                                     </button>
                                 </td>
                             </tr>

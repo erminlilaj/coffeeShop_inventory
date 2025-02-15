@@ -1,4 +1,4 @@
-
+// src/lib/auth.ts - Updated AuthService
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api';
@@ -30,8 +30,12 @@ class AuthService {
     }
 
     logout(): void {
+        // Clear both localStorage and cookie
         localStorage.removeItem(AuthService.TOKEN_KEY);
-        window.location.href = '/login';
+        document.cookie = 'coffee_shop_token=; max-age=0; path=/;';
+        
+        // Use window.location.replace for more reliable redirection
+        window.location.replace('/login');
     }
 
     setToken(token: string): void {

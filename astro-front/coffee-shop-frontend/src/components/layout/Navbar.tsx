@@ -5,9 +5,10 @@ import { User, LogOut, Key } from 'lucide-react';
 import { authService } from '../../lib/auth';
 
 const Navbar = () => {
-    const handleLogout = () => {
+    const handleLogout = (e: React.MouseEvent) => {
+        e.preventDefault();
         authService.logout();
-        window.location.href = '/login';
+        // No need for additional redirection as it's handled in the logout method
     };
 
     return (

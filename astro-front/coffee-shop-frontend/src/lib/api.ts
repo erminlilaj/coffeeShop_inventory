@@ -13,10 +13,20 @@ axios.interceptors.request.use(config => {
     return config;
 });
 
-// Handle errors globally
+// Handle errors globally, including token expiration
 axios.interceptors.response.use(
     response => response,
     error => {
+        const status = error.response?.status;
+        // Handle 401, 403 (unauthorized) or 500 errors with expired JWT token message
+        if (status === 401 || status === 403 || 
+            (status === 500 && error.response?.data?.message?.includes('expired'))) {
+            // Clear tokens and redirect to login
+            localStorage.removeItem('coffee_shop_token');
+            document.cookie = 'coffee_shop_token=; max-age=0; path=/;';
+            window.location.replace('/login');
+        }
+        
         const message = error.response?.data?.message || error.message || 'An error occurred';
         return Promise.reject(new Error(message));
     }
