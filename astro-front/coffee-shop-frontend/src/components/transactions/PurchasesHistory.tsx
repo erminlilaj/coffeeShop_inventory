@@ -339,7 +339,13 @@ const TransactionsHistory = () => {
               <Tooltip />
               <Bar
                 dataKey={
-                  selectedType === "purchases" ? "totalBought" : "totalSold"
+                  viewMode === "yearly"
+                    ? selectedType === "purchases"
+                      ? "yearlyPurchases"
+                      : "yearlyProfit"
+                    : selectedType === "purchases"
+                    ? "totalBought"
+                    : "totalSold"
                 }
                 fill="#4F46E5"
                 name={selectedType === "purchases" ? "Blerjet" : "Shitjet"}
@@ -390,7 +396,7 @@ const TransactionsHistory = () => {
                     {selectedType === "purchases" && (
                       <>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {stat.totalPurchased}
+                          {stat.yearlyPurchases}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           Lek &nbsp;
@@ -401,7 +407,7 @@ const TransactionsHistory = () => {
                     {selectedType === "sellings" && (
                       <>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {stat.totalSold}
+                          {stat.yearlySales}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           Lek &nbsp;

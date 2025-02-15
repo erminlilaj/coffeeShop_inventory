@@ -52,9 +52,9 @@ export interface MonthlyStatisticsDto {
 
 export interface YearlyStatisticsDTO {
     productName: string;
-    totalPurchased: number;
+    yearlyPurchases: number;
     totalPurchaseCost: number;
-    totalSold: number;
+    yearlySales: number;
     totalSalesRevenue: number;
     yearlyProfit: number;
 }
