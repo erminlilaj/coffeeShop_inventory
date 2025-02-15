@@ -21,7 +21,7 @@ const Navbar = () => {
                         </div>
                         <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                             <a href="/" className="inline-flex items-center px-1 pt-1 text-gray-900">
-                                Products
+                                Produktet
                             </a>
                             <a href="/purchases" className="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">
                                 Shitje/Blerjet
@@ -56,7 +56,7 @@ const Navbar = () => {
                                                 } flex px-4 py-2 text-sm text-gray-700 items-center`}
                                             >
                                                 <Key className="mr-2 h-4 w-4" />
-                                                Change Password
+                                                Ndroni FjaleKalimin Tuaj
                                             </a>
                                         )}
                                     </Menu.Item>
@@ -69,7 +69,7 @@ const Navbar = () => {
                                                 } flex px-4 py-2 text-sm text-gray-700 w-full items-center`}
                                             >
                                                 <LogOut className="mr-2 h-4 w-4" />
-                                                Logout
+                                                Dilni
                                             </button>
                                         )}
                                     </Menu.Item>
