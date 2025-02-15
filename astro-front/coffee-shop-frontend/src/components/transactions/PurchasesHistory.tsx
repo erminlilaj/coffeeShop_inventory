@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
   getPurchases,
   getSales,
   getMonthlyStatistics,
@@ -46,14 +54,24 @@ const TransactionsHistory = () => {
   ); // YYYY
 
   const albanianMonths = [
-    "Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor",
-    "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"
+    "Janar",
+    "Shkurt",
+    "Mars",
+    "Prill",
+    "Maj",
+    "Qershor",
+    "Korrik",
+    "Gusht",
+    "Shtator",
+    "Tetor",
+    "Nëntor",
+    "Dhjetor",
   ];
-    // Function to get Albanian month name from YYYY-MM format
-    const getAlbanianMonth = (dateString: string) => {
-      const [year, month] = dateString.split("-");
-      return `${albanianMonths[Number(month) - 1]} ${year}`; // Convert month index (1-based) to 0-based
-    };
+  // Function to get Albanian month name from YYYY-MM format
+  const getAlbanianMonth = (dateString: string) => {
+    const [year, month] = dateString.split("-");
+    return `${albanianMonths[Number(month) - 1]} ${year}`; // Convert month index (1-based) to 0-based
+  };
 
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStatisticsDto[]>([]);
   const [yearlyStats, setYearlyStats] = useState<YearlyStatisticsDTO[]>([]);
@@ -129,6 +147,8 @@ const TransactionsHistory = () => {
       setLoading(false);
     }
   };
+  const statsData = viewMode === "monthly" ? monthlyStats : yearlyStats;
+  const [statView, setStatView] = useState<"simple" | "graph">("simple");
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -138,34 +158,33 @@ const TransactionsHistory = () => {
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-4">
-          {viewMode === "monthly" && (
-            <div className="relative">
-              {/* The actual input */}
-              {selectedMonth && (
-                <div className="mt-1 text-l text-gray-600">
-                  {getAlbanianMonth(selectedMonth)}
-                </div>
-              )}
+          <div className="flex space-x-4">
+            {viewMode === "monthly" && (
+              <div className="relative">
+                {/* The actual input */}
+                {selectedMonth && (
+                  <div className="mt-1 text-l text-gray-600">
+                    {getAlbanianMonth(selectedMonth)}
+                  </div>
+                )}
+                <input
+                  type="month"
+                  value={selectedMonth} // Keep it as "YYYY-MM"
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+              </div>
+            )}
+
+            {viewMode === "yearly" && (
               <input
-                type="month"
-                value={selectedMonth} // Keep it as "YYYY-MM"
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                type="number"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 w-24"
               />
-
-            </div>
-          )}
-
-          {viewMode === "yearly" && (
-            <input
-              type="number"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 w-24"
-            />
-          )}
-        </div>
+            )}
+          </div>
           <div className="flex space-x-4">
             <label>
               <input
@@ -212,9 +231,31 @@ const TransactionsHistory = () => {
           </div>
         </div>
       </div>
+      <div className="p-4 border-b border-gray-200 flex space-x-4">
+        <label>
+          <input
+            type="radio"
+            value="simple"
+            checked={statView === "simple"}
+            onChange={() => setStatView("simple")}
+            className="mr-2"
+          />
+          Statistikë e thjeshtë
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="graph"
+            checked={statView === "graph"}
+            onChange={() => setStatView("graph")}
+            className="mr-2"
+          />
+          Statistikë me grafikë
+        </label>
+      </div>
 
       {/* Statistics Section */}
-      {viewMode === "monthly" && (
+      {statView === "simple" && viewMode === "monthly" && (
         <div className="p-4 border-b border-gray-200">
           <h3 className="text-xl font-bold mb-2">Statistika Mujore</h3>
           {monthlyStats.length > 0 ? (
@@ -281,6 +322,30 @@ const TransactionsHistory = () => {
           ) : (
             <div className="text-gray-500">No transactions for this month</div>
           )}
+        </div>
+      )}
+      {statView === "graph" && (
+        <div className="p-4 border-b border-gray-200">
+          <h3 className="text-xl font-bold mb-2">
+            Grafik i {viewMode === "monthly" ? "Mujore" : "Vjetore"}
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={statsData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              <XAxis dataKey="productName" />
+              <YAxis />
+              <Tooltip />
+              <Bar
+                dataKey={
+                  selectedType === "purchases" ? "totalBought" : "totalSold"
+                }
+                fill="#4F46E5"
+                name={selectedType === "purchases" ? "Blerjet" : "Shitjet"}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       )}
 
@@ -358,7 +423,7 @@ const TransactionsHistory = () => {
       {viewMode === "monthly" && monthlyStats.length > 0 && (
         <div className="p-4">
           <h3 className="text-xl font-bold mb-2">
-            {selectedType === "purchases" ? "Purchases" : "Sellings"}
+            {selectedType === "purchases" ? "Blerjet" : "Shitjet"}
           </h3>
           {selectedType === "purchases" && purchases.content.length > 0 ? (
             <>
