@@ -92,7 +92,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                                 <div className="sm:flex sm:items-start">
                                     <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                         <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900">
-                                            Purchase {product.name}
+                                            Bli {product.name}
                                         </Dialog.Title>
                                         <div className="mt-4">
                                             <form onSubmit={handleSubmit} className="space-y-4">
