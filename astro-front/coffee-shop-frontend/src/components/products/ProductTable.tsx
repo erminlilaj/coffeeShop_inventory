@@ -47,13 +47,13 @@ const ProductTable: React.FC<Props> = () => {
     return (
         <div className="bg-white shadow-sm rounded-lg">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-800">Products</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Produktet</h2>
                 <button
                     onClick={() => setIsAddModalOpen(true)}
                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Product
+                    Shto Produkt
                 </button>
             </div>
 
@@ -68,16 +68,16 @@ const ProductTable: React.FC<Props> = () => {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
+                                Emri
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Current Stock
+                                Sasia
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Last Purchase Price
+                                Cmimi i fundit i blerjes
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Last Sale Price
+                                Cmimi i fundit i shitjes
                             </th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
@@ -94,23 +94,23 @@ const ProductTable: React.FC<Props> = () => {
                                     {product.currentStock}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${product.lastBoughtPrice?.toFixed(2) || '0.00'}
+                                    {product.lastBoughtPrice?.toFixed(2) || '0.00'} lek
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${product.lastSoldPrice?.toFixed(2) || '0.00'}
+                                    {product.lastSoldPrice?.toFixed(2) || '0.00'} lek
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button
                                         onClick={() => handlePurchase(product)}
                                         className="text-indigo-600 hover:text-indigo-900 mx-2"
-                                        title="Purchase"
+                                        title="Bli"
                                     >
                                         <ShoppingCart className="h-5 w-5" />
                                     </button>
                                     <button
                                         onClick={() => handleSell(product)}
                                         className="text-green-600 hover:text-green-900 mx-2"
-                                        title="Sell"
+                                        title="Shit"
                                     >
                                         <DollarSign className="h-5 w-5" />
                                     </button>
